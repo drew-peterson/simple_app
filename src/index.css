@@ -1,0 +1,11 @@
+html,
+body {
+  background-color: #f6f7f8;
+  margin: 0;
+}
+
+button {
+  background: none;
+  border: none;
+  padding: 0;
+}
