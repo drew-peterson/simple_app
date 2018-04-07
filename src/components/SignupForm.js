@@ -1,85 +1,57 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withStateHandlers, compose } from 'recompose';
 import { Input, Button } from '../common';
-import { emailValidation, passwordValidation } from '../helpers/validation';
+import validateForm from '../helpers/validation';
 import styled from 'styled-components';
 
-class SignupForm extends Component {
-  state = {
-    email: '',
-    password: ''
-  };
+const SignupForm = ({
+  email,
+  password,
+  handleBlur,
+  handleChange,
+  pristine,
+  onSubmit,
+  formMessage
+}) => (
+    <Form onSubmit={onSubmit} noValidate>
+      <Input
+        type="email"
+        name="email"
+        input={email}
+        required="true"
+        placeholder="Email"
+        handleChange={handleChange}
+        handleBlur={handleBlur}
+      />
+      <Input
+        type="password"
+        name="password"
+        required="true"
+        input={password}
+        placeholder="Password"
+        handleChange={handleChange}
+        handleBlur={handleBlur}
+        style={{ marginTop: '15px' }}
+      />
 
-  onSubmit(event) {
-    event.preventDefault();
-    // const { email, password } = this.state;
-    console.log('this.props', this.props);
-  }
+      <Button
+        type="submit"
+        disabled={pristine}
+        style={{ marginTop: '20px', backgroundColor: '#469b60' }}
+      >
+        Submit
+      </Button>
+      {formMessage && <Success>{formMessage}</Success>}
+    </Form>
+  );
+};
 
-  // handleChange({ target: { name, value } }) {
-  //   let errors = {};
-  //   let error;
-  //   const meta = { ...this.state.meta };
-  //   this.setState({ [name]: value });
-  //
-  //   if (name === 'email') {
-  //     error = emailValidation(value);
-  //   } else {
-  //     error = passwordValidation(value);
-  //   }
-  //
-  //   if (error) {
-  //     errors = { ...this.state.meta.errors, ...error };
-  //     meta.errors = errors;
-  //     this.setState({ meta });
-  //     console.log('this.state', this.state);
-  //   }
-  // }
-
-  // handleBlur({ target: { name, value } }) {}
-
-  render() {
-    const {
-      email,
-      password,
-      handleBlur,
-      handleChange,
-      formInvalid
-    } = this.props;
-    return (
-      <Form onSubmit={this.onSubmit.bind(this)}>
-        <Input
-          type="email"
-          name="email"
-          value={email.value}
-          // error={errors.email}
-          placeholder="Email"
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-        />
-        <Input
-          type="password"
-          name="password"
-          value={password.value}
-          // error={errors.password}
-          placeholder="Password"
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-          style={{ marginTop: '15px' }}
-        />
-
-        <Button
-          type="submit"
-          disabled={formInvalid}
-          style={{ marginTop: '20px', backgroundColor: '#469b60' }}
-        >
-          Submit
-        </Button>
-      </Form>
-    );
-  }
-}
-
+const Success = styled.p`
+  color: green;
+  text-align: center;
+  font-size: 20px;
+  margin-top: 10px;
+`;
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -94,7 +66,8 @@ const Form = styled.form`
 export default compose(
   withStateHandlers(
     {
-      formInvalid: false,
+      pristine: true,
+      formMessage: '',
       email: {
         value: '',
         error: '',
@@ -107,14 +80,27 @@ export default compose(
       }
     },
     {
-      handleBlur: props => event => {
-        console.log('props', props);
-        console.log('event', event);
-      },
-      handleChange: props => ({ target: { value, name } }) => {
-        const update = { ...props[name], value };
+      handleBlur: state => ({ target: { name } }) => {
+        const update = { ...state[name], touched: true };
         return { [name]: update };
+      },
+      handleChange: state => ({ target: { value, name } }) => {
+        const error = validateForm[name](value);
+        const update = { ...state[name], value, error };
+        return { [name]: update, pristine: false };
+      },
+      onSubmit: ({ email, password }) => event => {
+        event.preventDefault();
+        let formMessage = '';
+        if (
+          validateForm.email(email.value) ||
+          validateForm.password(password.value)
+        ) {
+          formMessage = '';
+        } else {
+          formMessage = 'Success!';
+        }
+        return { formMessage };
       }
-    }
   )
 )(SignupForm);
