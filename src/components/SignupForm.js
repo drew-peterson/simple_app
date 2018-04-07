@@ -66,6 +66,7 @@ const Form = styled.form`
 // refactor the handlers to reusable file like withData.
 // set the state here and the handles will figure out validation
 // most likely keep submit handler here..
+// need to trigger error message if they try to submit when not valid...
 
 export default compose(
   withStateHandlers(
