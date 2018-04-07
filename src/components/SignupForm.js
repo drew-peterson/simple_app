@@ -62,6 +62,11 @@ const Form = styled.form`
   margin: 0 auto;
 `;
 
+// TODO:
+// refactor the handlers to reusable file like withData.
+// set the state here and the handles will figure out validation
+// most likely keep submit handler here..
+
 export default compose(
   withStateHandlers(
     {
