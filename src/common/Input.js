@@ -49,7 +49,6 @@ const InputField = styled.input`
 
 const ErrorField = styled.p`
   color: red;
-  margin: 0;
   margin-top: 5px;
 `;
 

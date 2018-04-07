@@ -13,38 +13,37 @@ const SignupForm = ({
   onSubmit,
   formMessage
 }) => (
-    <Form onSubmit={onSubmit} noValidate>
-      <Input
-        type="email"
-        name="email"
-        input={email}
-        required="true"
-        placeholder="Email"
-        handleChange={handleChange}
-        handleBlur={handleBlur}
-      />
-      <Input
-        type="password"
-        name="password"
-        required="true"
-        input={password}
-        placeholder="Password"
-        handleChange={handleChange}
-        handleBlur={handleBlur}
-        style={{ marginTop: '15px' }}
-      />
+  <Form onSubmit={onSubmit} noValidate>
+    <Input
+      type="email"
+      name="email"
+      input={email}
+      required="true"
+      placeholder="Email"
+      handleChange={handleChange}
+      handleBlur={handleBlur}
+    />
+    <Input
+      type="password"
+      name="password"
+      required="true"
+      input={password}
+      placeholder="Password"
+      handleChange={handleChange}
+      handleBlur={handleBlur}
+      style={{ marginTop: '15px' }}
+    />
 
-      <Button
-        type="submit"
-        disabled={pristine}
-        style={{ marginTop: '20px', backgroundColor: '#469b60' }}
-      >
-        Submit
-      </Button>
-      {formMessage && <Success>{formMessage}</Success>}
-    </Form>
-  );
-};
+    <Button
+      type="submit"
+      disabled={pristine}
+      style={{ marginTop: '20px', backgroundColor: '#469b60' }}
+    >
+      Submit
+    </Button>
+    {formMessage && <Success>{formMessage}</Success>}
+  </Form>
+);
 
 const Success = styled.p`
   color: green;
@@ -91,16 +90,16 @@ export default compose(
       },
       onSubmit: ({ email, password }) => event => {
         event.preventDefault();
-        let formMessage = '';
         if (
           validateForm.email(email.value) ||
           validateForm.password(password.value)
         ) {
-          formMessage = '';
+          return { formMessage: '' };
         } else {
-          formMessage = 'Success!';
+          console.log('SUBMIT FORM');
+          return { formMessage: 'Success!', pristine: true };
         }
-        return { formMessage };
       }
+    }
   )
 )(SignupForm);
