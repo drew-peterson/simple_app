@@ -67,6 +67,7 @@ const Form = styled.form`
 // set the state here and the handles will figure out validation
 // most likely keep submit handler here..
 // need to trigger error message if they try to submit when not valid...
+// dont think i actually use the required prop for validation
 
 export default compose(
   withStateHandlers(
